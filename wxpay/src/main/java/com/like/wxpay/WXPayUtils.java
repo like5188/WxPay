@@ -2,6 +2,7 @@ package com.like.wxpay;
 
 import android.app.Activity;
 
+import com.like.toast.ToastUtils;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -10,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WXPayUtils {
+    public static final String APP_ID = "wx98bde64c73d87b9f";
     private Activity mActivity;
     private IWXAPI mWeixinAPI;
 
@@ -17,8 +19,8 @@ public class WXPayUtils {
 
     private WXPayUtils(Activity activity) {
         mActivity = activity;
-        mWeixinAPI = WXAPIFactory.createWXAPI(mActivity, WXConstants.APP_ID, false);
-        mWeixinAPI.registerApp(WXConstants.APP_ID);
+        mWeixinAPI = WXAPIFactory.createWXAPI(mActivity, APP_ID, false);
+        mWeixinAPI.registerApp(APP_ID);
     }
 
     public static WXPayUtils getInstance(Activity activity) {
@@ -52,7 +54,7 @@ public class WXPayUtils {
         if (jsonObject != null) {
             PayParams params = new PayParams().parse(jsonObject);
             PayReq req = new PayReq();
-            req.appId = WXConstants.APP_ID;
+            req.appId = APP_ID;
             req.partnerId = params.partnerid;
             req.prepayId = params.prepayid;
             req.nonceStr = params.noncestr;

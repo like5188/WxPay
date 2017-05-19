@@ -34,11 +34,8 @@ dependencies {
     compile rootProject.ext.deps.appcompat_v7
     testCompile rootProject.ext.deps.junit
 
-    compile rootProject.ext.deps.rxjava
-    compile rootProject.ext.deps.rxandroid
-    compile rootProject.ext.deps.rxbinding
-
     compile rootProject.ext.deps.wxsdk
+    compile rootProject.ext.deps.Toast
 }
 
 apply from: rootProject.file('./gradle-mvn-push.gradle')

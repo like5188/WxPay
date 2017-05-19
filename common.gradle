@@ -10,16 +10,10 @@ ext {
             appcompat_v7: "com.android.support:appcompat-v7:${compileSdkVersion}.+",
             junit       : "junit:junit:4.12",
 
-            rxjava      : "io.reactivex.rxjava2:rxjava:2.0.8",
-            rxandroid   : "io.reactivex.rxjava2:rxandroid:2.0.1",
-            rxbinding   : "com.jakewharton.rxbinding2:rxbinding:2.0.0",
-
             wxsdk       : "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+",
 
             // 自己写的库
-            rxbus       : "com.github.like5188.RxBus:rxbus:1.0.0",
-            Logger      : "com.github.like5188:Logger:1.0.0",
-
+            Toast       : "com.github.like5188:Toast:1.0.0",
     ]
 
 }
