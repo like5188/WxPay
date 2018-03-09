@@ -1,6 +1,5 @@
 package com.like.wxpay;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.like.toast.ToastUtilsKt;
@@ -22,11 +21,11 @@ public class WXPayUtils {
         mWeixinAPI = WXAPIFactory.createWXAPI(mContext, null);
     }
 
-    public static WXPayUtils getInstance(Activity activity) {
+    public static WXPayUtils getInstance(Context context) {
         if (sInstance == null) {
             synchronized (WXPayUtils.class) {
                 if (sInstance == null) {
-                    sInstance = new WXPayUtils(activity);
+                    sInstance = new WXPayUtils(context);
                 }
             }
         }

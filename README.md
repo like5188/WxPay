@@ -18,7 +18,7 @@
 在Module的gradle中加入：
 ```groovy
     dependencies {
-        compile 'com.github.like5188:WxPay:2.0.0'
+        compile 'com.github.like5188:WxPay:2.0.1'
     }
 ```
 2、支付结果回调
