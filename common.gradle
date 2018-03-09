@@ -1,8 +1,8 @@
 ext {
     minSdkVersion = 16
-    targetSdkVersion = 25
-    compileSdkVersion = 25
-    buildToolsVersion = "25.0.2"
+    targetSdkVersion = 26
+    compileSdkVersion = 26
+    buildToolsVersion = "26.0.2"
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -13,7 +13,7 @@ ext {
             wxsdk       : "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+",
 
             // 自己写的库
-            Toast       : "com.github.like5188:Toast:1.0.0",
+            Toast       : "com.github.like5188:Toast:2.0.0",
     ]
 
 }
