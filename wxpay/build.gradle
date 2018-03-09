@@ -38,6 +38,7 @@ dependencies {
 
     compile rootProject.ext.deps.wxsdk
     compile rootProject.ext.deps.Toast
+    compile 'com.github.like5188:Logger:2.0.0'
 }
 
 apply from: rootProject.file('./gradle-mvn-push.gradle')

@@ -2,6 +2,7 @@ package com.like.wxpay;
 
 import android.content.Context;
 
+import com.like.logger.Logger;
 import com.like.toast.ToastUtilsKt;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 public class WXPayUtils {
     private Context mContext;
+    private String mAppId;
     private IWXAPI mWeixinAPI;
 
     private volatile static WXPayUtils sInstance;
@@ -32,6 +34,11 @@ public class WXPayUtils {
         return sInstance;
     }
 
+    public void init(String appId) {
+        mAppId = appId;
+        mWeixinAPI.registerApp(mAppId);
+    }
+
     /**
      * 支付
      *
@@ -43,6 +50,7 @@ public class WXPayUtils {
             ToastUtilsKt.shortToastCenter(mContext, "您还没有安装微信");
             return;
         }
+        Logger.d("获取订单中...");
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(payParams);
@@ -51,24 +59,23 @@ public class WXPayUtils {
         }
         if (jsonObject != null) {
             PayParams params = new PayParams().parse(jsonObject);
-            if (mWeixinAPI.registerApp(params.appId)) {
-                PayReq req = new PayReq();
-                req.appId = params.appId;
-                req.partnerId = params.partnerid;
-                req.prepayId = params.prepayid;
-                req.nonceStr = params.noncestr;
-                req.timeStamp = params.timestamp;
-                req.packageValue = params.packagevalue;
-                req.sign = params.sign;
-                // ToastUtils.showShortCenter(mActivity, "正常调起支付");
-                // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
-                mWeixinAPI.sendReq(req);
-            }
+            PayReq req = new PayReq();
+            req.appId = mAppId;
+            req.partnerId = params.partnerid;
+            req.prepayId = params.prepayid;
+            req.nonceStr = params.noncestr;
+            req.timeStamp = params.timestamp;
+            req.packageValue = params.packagevalue;
+            req.sign = params.sign;
+            // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+            Logger.d("正常调起支付");
+            mWeixinAPI.sendReq(req);
+        } else {
+            Logger.e("订单返回错误");
         }
     }
 
     class PayParams {
-        String appId;
         String partnerid;
         String prepayid;
         String noncestr;
@@ -82,7 +89,6 @@ public class WXPayUtils {
             }
             PayParams params = new PayParams();
             try {
-                params.appId = jsonObject.getString("appId");
                 params.partnerid = jsonObject.getString("partnerid");
                 params.prepayid = jsonObject.getString("prepayid");
                 params.noncestr = jsonObject.getString("noncestr");
