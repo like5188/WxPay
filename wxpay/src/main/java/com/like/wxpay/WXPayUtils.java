@@ -88,19 +88,27 @@ public class WXPayUtils {
                 return null;
             }
             PayParams params = new PayParams();
-            try {
-                params.partnerid = jsonObject.getString("partnerid");
-                params.prepayid = jsonObject.getString("prepayid");
-                params.noncestr = jsonObject.getString("noncestr");
-                params.timestamp = jsonObject.getString("timestamp");
-                params.packagevalue = jsonObject.getString("package");
-                params.sign = jsonObject.getString("sign");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            params.partnerid = jsonObject.optString("partnerid");
+            params.prepayid = jsonObject.optString("prepayid");
+            params.noncestr = jsonObject.optString("noncestr");
+            params.timestamp = jsonObject.optString("timestamp");
+            params.packagevalue = jsonObject.optString("package");
+            params.sign = jsonObject.optString("sign");
+            Logger.d(params);
             return params;
         }
 
+        @Override
+        public String toString() {
+            return "PayParams{" +
+                    "partnerid='" + partnerid + '\'' +
+                    ", prepayid='" + prepayid + '\'' +
+                    ", noncestr='" + noncestr + '\'' +
+                    ", timestamp='" + timestamp + '\'' +
+                    ", packagevalue='" + packagevalue + '\'' +
+                    ", sign='" + sign + '\'' +
+                    '}';
+        }
     }
 
 }
