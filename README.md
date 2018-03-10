@@ -21,8 +21,8 @@
         compile 'com.github.like5188:WxPay:2.1.5'
     }
 ```
-2、初始化
-  ```java
+2、在Application中进行一次初始化。
+  ```java
     WXPayUtils.getInstance(this).init(appid)
   ```
 3、支付结果回调
