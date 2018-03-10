@@ -18,7 +18,7 @@
 在Module的gradle中加入：
 ```groovy
     dependencies {
-        compile 'com.github.like5188:WxPay:2.2.1'
+        compile 'com.github.like5188:WxPay:版本号'
     }
 ```
 2、在Application中进行一次初始化。
