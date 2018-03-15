@@ -69,6 +69,7 @@ public class WXPayUtils {
             req.packageValue = params.packagevalue;
             req.sign = params.sign;
             // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+            Logger.d("检查订单信息：" + req.checkArgs());
             Logger.d("调微信支付：" + mWeixinAPI.sendReq(req));
         } else {
             Logger.e("订单信息错误");
