@@ -39,6 +39,14 @@ public class WXPayUtils {
         Logger.d("微信appId(" + mAppId + ")注册：" + mWeixinAPI.registerApp(mAppId));
     }
 
+    public IWXAPI getWeixinAPI() {
+        return mWeixinAPI;
+    }
+
+    public String getAppId() {
+        return mAppId;
+    }
+
     /**
      * 支付
      *
