@@ -1,6 +1,12 @@
-# WxPay
+#### 最新版本
 
-微信支付
+模块|WxPay
+---|---
+最新版本|[![Download](https://jitpack.io/v/like5188/WxPay.svg)](https://jitpack.io/#like5188/WxPay)
+
+## 功能介绍
+
+1、微信支付封装
 
 ## 使用方法：
 
@@ -18,25 +24,45 @@
 在Module的gradle中加入：
 ```groovy
     dependencies {
-        compile 'com.github.like5188:WxPay:版本号'
+        implementation 'com.github.like5188:WxPay:版本号'
+        // 引用LiveDataBus库，用于接收返回结果
+        implementation 'com.github.like5188.LiveDataBus:livedatabus:1.2.2'
+        kapt 'com.github.like5188.LiveDataBus:livedatabus_compiler:1.2.2'
     }
 ```
+
 2、在Application中进行一次初始化。
-  ```java
+```java
     WXPayUtils.getInstance(this).init(appid)
-  ```
-3、支付结果回调
-  参照微信SDK Sample，在net.sourceforge.simcpux.wxapi包路径中实现WXPayEntryActivity类(包名或类名不一致会造成无法回调)，在WXPayEntryActivity类中实现onResp函数，支付完成后，微信APP会返回到商户APP并回调onResp函数，开发者需要在该函数中接收通知，判断返回错误码，如果支付成功则去后台查询支付结果再展示用户实际支付结果。注意一定不能以客户端返回作为用户支付的结果，应以服务器端的接收的支付通知或查询API返回的结果为准。代码示例如下：
-  ```java
-    public void onResp(BaseRespresp){
-        if(resp.getType()==ConstantsAPI.COMMAND_PAY_BY_WX){
-            Log.d(TAG,"onPayFinish,errCode="+resp.errCode);
-            AlertDialog.Builderbuilder=newAlertDialog.Builder(this);
-            builder.setTitle(R.string.app_tip);
-        }
+```
+
+3、支付
+```java
+    WXPayUtils.getInstance(this).pay(payParams)
+```
+
+4、接收返回结果
+```java
+    在任意一个类中注册
+    LiveDataBus.register(this, this);
+```
+        然后用下面三个方法接收支付宝返回的结果
+```java
+    // 支付成功
+    @RxBusSubscribe(WXPayUtils.TAG_PAY_SUCCESS)
+    public void onPaySuccess() {
     }
-  ```
-4、回调中errCode值列表：
-    0  成功 展示成功页面
-    -1 错误 可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
-    -2 用户取消 无需处理。发生场景：用户不支付了，点击取消，返回APP。
+```
+```java
+    // 支付失败
+    @RxBusSubscribe(WXPayUtils.TAG_PAY_FAILURE)
+    public void onPayFailure() {
+    }
+```
+
+5、Proguard
+```java
+    # LiveDataBus
+    -keep class * extends com.like.livedatabus.Bridge
+    -keep class com.like.livedatabus_annotations.**{*;}
+```
