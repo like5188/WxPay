@@ -5,35 +5,30 @@ import android.util.Log
 import android.widget.Toast
 import com.tencent.mm.opensdk.modelpay.PayReq
 import com.tencent.mm.opensdk.openapi.IWXAPI
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.jvm.functions.FunctionN
 
-class WxPayUtils private constructor(private val mContext: Context) {
-    companion object : SingletonHolder<WxPayUtils>(object : FunctionN<WxPayUtils> {
-        override val arity: Int = 1 // number of arguments that must be passed to constructor
+object WxPayUtils {
+    private val TAG = WxPayUtils::class.java.simpleName
 
-        override fun invoke(vararg args: Any?): WxPayUtils {
-            return WxPayUtils(args[0] as Context)
-        }
-    }) {
-        private val TAG = WxPayUtils::class.java.simpleName
-        /**
-         * 支付成功
-         */
-        const val TAG_PAY_SUCCESS = "TAG_PAY_SUCCESS"
-        /**
-         * 支付失败
-         */
-        const val TAG_PAY_FAILURE = "TAG_PAY_FAILURE"
-        var sAppId: String = ""
-    }
+    /**
+     * 支付成功
+     */
+    const val TAG_PAY_SUCCESS = "TAG_PAY_SUCCESS"
 
-    private val mWxApi: IWXAPI by lazy { ApiFactory.createWxApi(mContext.applicationContext, sAppId) }
+    /**
+     * 支付失败
+     */
+    const val TAG_PAY_FAILURE = "TAG_PAY_FAILURE"
 
-    fun init(appId: String) {
-        sAppId = appId
-        Log.d(TAG, "微信appId($appId)注册：${mWxApi.registerApp(appId)}")
+    private lateinit var appId: String
+    lateinit var wxApi: IWXAPI
+
+    fun init(context: Context, appId: String) {
+        this.appId = appId
+        wxApi = WXAPIFactory.createWXAPI(context.applicationContext, appId, true)
+        Log.d(TAG, "微信appId($appId)注册：${wxApi.registerApp(appId)}")
     }
 
     /**
@@ -41,36 +36,36 @@ class WxPayUtils private constructor(private val mContext: Context) {
      *
      * @param payParams 支付参数，json格式
      */
-    fun pay(payParams: String) {
-        if (sAppId.isEmpty()) {
+    fun pay(context: Context, payParams: String) {
+        if (appId.isEmpty()) {
             throw UnsupportedOperationException("支付之前必须先调用init()方法进行初始化")
         }
-        if (!mWxApi.isWXAppInstalled) {
+        if (!wxApi.isWXAppInstalled) {
             // 提醒用户没有安装微信
-            Toast.makeText(mContext, "您还没有安装微信", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "您还没有安装微信", Toast.LENGTH_SHORT).show()
             return
         }
-        Toast.makeText(mContext, "获取订单中...", Toast.LENGTH_SHORT).show()
         try {
             JSONObject(payParams).apply {
                 val req = PayReq()
-                req.appId = sAppId
+                req.appId = appId
                 req.partnerId = this.optString("partnerid")
                 req.prepayId = this.optString("prepayid")
                 req.nonceStr = this.optString("noncestr")
                 req.timeStamp = this.optString("timestamp")
                 req.packageValue = this.optString("package")
                 req.sign = this.optString("sign")
+                req.extData = this.optString("extData")
                 // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
                 if (req.checkArgs()) {// 检查订单信息
-                    Log.d(TAG, "调用微信支付：${mWxApi.sendReq(req)}")
+                    Log.d(TAG, "调用微信支付：${wxApi.sendReq(req)}")
                 } else {
-                    Toast.makeText(mContext, "订单信息错误", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "订单信息错误", Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
-            Toast.makeText(mContext, "订单信息错误", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "订单信息错误", Toast.LENGTH_SHORT).show()
         }
     }
 

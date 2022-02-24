@@ -25,44 +25,41 @@
 ```groovy
     dependencies {
         implementation 'com.github.like5188:WxPay:版本号'
-        // 引用LiveDataBus库，用于接收返回结果
-        implementation 'com.github.like5188.LiveDataBus:livedatabus:1.2.2'
-        kapt 'com.github.like5188.LiveDataBus:livedatabus_compiler:1.2.2'
+        // 引用 FlowEventBus 库，用于接收返回结果
+        implementation 'com.github.like5188.FlowEventBus:floweventbus:0.0.3'
+        implementation 'com.github.like5188.FlowEventBus:floweventbus_annotations:0.0.3'
+        kapt 'com.github.like5188.FlowEventBus:floweventbus_compiler:0.0.3'
+        implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
     }
 ```
 
 2、在Application中进行一次初始化。
 ```java
-    WXPayUtils.getInstance(this).init(appid)
+    WXPayUtils.init(context, appid)
 ```
 
 3、支付
 ```java
-    WXPayUtils.getInstance(this).pay(payParams)
+    WXPayUtils.pay(context, payParams)
 ```
 
 4、接收返回结果
 ```java
     在任意一个类中注册
-    LiveDataBus.register(this, this);
+        FlowEventBus.register(this)
 ```
         然后用下面三个方法接收支付宝返回的结果
 ```java
     // 支付成功
-    @RxBusSubscribe(WXPayUtils.TAG_PAY_SUCCESS)
-    public void onPaySuccess() {
+    @BusObserver([WxPayUtils.TAG_PAY_SUCCESS])
+    fun onPaySuccess() {
+        Toast.makeText(this, "微信支付成功", Toast.LENGTH_SHORT).show()
     }
 ```
 ```java
     // 支付失败
-    @RxBusSubscribe(WXPayUtils.TAG_PAY_FAILURE)
-    public void onPayFailure() {
+    @BusObserver([WxPayUtils.TAG_PAY_FAILURE])
+    fun onPayFailure() {
+        Toast.makeText(this, "微信支付失败", Toast.LENGTH_SHORT).show()
     }
-```
-
-5、Proguard
-```java
-    # LiveDataBus
-    -keep class * extends com.like.livedatabus.Bridge
-    -keep class com.like.livedatabus_annotations.**{*;}
 ```
